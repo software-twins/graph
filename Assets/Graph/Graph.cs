@@ -3,6 +3,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[ RequireComponent (typeof (RectTransform)) ]
+
 public class Graph : CanvasElement
 	{
 		private GameObject background, axes;
@@ -14,32 +16,32 @@ public class Graph : CanvasElement
 				//GameObject obj;
 				(background = new GameObject ()).name = "Background";
 				
-				background.transform.parent = gameObject.transform;
+				background.transform.SetParent (gameObject.transform, false);
 				background.AddComponent <Image> ().color = new Vector4 (0.0f, 0.0f, 1.0f, 0.05f); 
 
-				(axes = new GameObject ()).name = "AxesContainer";
+				RectTransform transform = background.GetComponent <RectTransform> ();
+
+				transform.anchoredPosition = transform.pivot = transform.sizeDelta = new Vector2 (0.0f, 0.0f); 
 				
-				axes.transform.parent = gameObject.transform;
+				transform.anchorMin = new Vector2 (0.0f, 0.0f);
+				transform.anchorMax = new Vector2 (1.0f, 1.0f);
+
+				(axes = new GameObject ()).name = "Axes";
+				
+				axes.transform.SetParent (gameObject.transform, false);
 				axes.AddComponent <Axes> ().initialize ();
+
+				transform = axes.GetComponent <RectTransform> ();
+
+				transform.anchoredPosition = transform.pivot = transform.sizeDelta = new Vector2 (0.0f, 0.0f); 
+				
+				transform.anchorMin = new Vector2 (0.0f, 0.0f);
+				transform.anchorMax = new Vector2 (1.0f, 1.0f);
 			}
 
-		override public void geometry (Rect rect)
+		public Graph initialize (Canvas canvas)
 			{
-				/** provide text position and size using RectTransform */
-        		RectTransform transform = background.GetComponent <RectTransform> ();
-							
-				/** set background box dimensions */
-				transform.sizeDelta = new Vector2 (rect.width / 2.2f, rect.height / 2.2f);
-				/** set background position */
-				/** transform.localPosition = new Vector3 (rect.width / 2.0f, rect.height / 2.0f, 0.0f); */
-				transform.position = Vector3.Scale (new Vector3 (rect.width / 4.0f, rect.height / 4.0f, 0.0f),
-													transform.localScale);
-			
-				axes.GetComponent <Axes> ().geometry (rect);
-			}
-
-		public Graph initialize ()
-			{
+				//background.transform.parent = canvas.transform;				
 				return this;
 			}
 	}

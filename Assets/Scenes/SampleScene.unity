@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 276434134}
   - component: {fileID: 276434133}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: TemperatureCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 276434132}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21db22fac53efc154b6304ae2a473307, type: 3}
+  m_Script: {fileID: 11500000, guid: b4666cfca6e079ecf92e6d659b120289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &276434134
@@ -606,7 +606,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d04de4873cff57d399e0e5b59ae30af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  circleSprite: {fileID: 0}
 --- !u!4 &1093188345
 Transform:
   m_ObjectHideFlags: 0

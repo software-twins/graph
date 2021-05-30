@@ -3,6 +3,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[ RequireComponent (typeof (RectTransform)) ]
+
 public class Axe : MonoBehaviour
 	{
 		private GameObject line, text;
@@ -11,35 +13,42 @@ public class Axe : MonoBehaviour
 			{
 				(line = new GameObject ()).name = "Line";
 				
-				line.transform.parent = gameObject.transform;
+				line.transform.SetParent (gameObject.transform, false);
 				line.AddComponent <Image> ().color = Color.red;
-	
+
+				RectTransform transform = line.GetComponent <RectTransform> ();
+				transform.anchoredPosition = new Vector2 (0.0f, 0.0f); 
+transform.pivot = new Vector2 (0.5f, 0.0f); 
+				
+				transform.anchorMin = new Vector2 (0.0f, 0.0f);
+				transform.anchorMax = new Vector2 (0.0f, 1.0f);
+
+				transform.sizeDelta = new Vector2 (1.0f, 0.0f); 
+
 				(text = new GameObject ()).name = "Signature";
 
-				text.transform.parent = gameObject.transform;
+				text.transform.SetParent (gameObject.transform, false);
+
 				Text t = text.AddComponent <Text> ();
 				
-				t.color = Color.green;
-				t.text = "100";
+       			t.font = (Font) Resources.GetBuiltinResource (typeof (Font), "Arial.ttf");
+        		t.text = "P";
+       			t.fontSize = 18;
+        		t.alignment = TextAnchor.MiddleCenter;
+
+      			 // Provide Text position and size using RectTransform.
+      	        transform = t.GetComponent <RectTransform> ();
+        		
+				transform.anchoredPosition = transform.pivot = new Vector2 (0.0f, 0.0f); 
+				
+				transform.anchorMin = new Vector2 (0.0f, 0.0f);
+				transform.anchorMax = new Vector2 (1.0f, 0.0f);
+
+				//transform.sizeDelta = new Vector2 (1.0f, 0.0f); 
 			}
 
 		private float angle = 0.0f;
 			
-		public void geometry (Vector2 position, float length)
-			{
-				RectTransform transform = line.GetComponent <RectTransform> ();
-
-				transform.anchoredPosition =  Vector2.Scale (position, transform.localScale);
-				transform.sizeDelta = new Vector2 (length, 2f);
-				transform.localEulerAngles = new Vector3 (0, 0, 90);
-
-				//transform = text.GetComponent <RectTransform> ();
-				
-				//transform.anchoredPosition =  new Vector2 (rect.width / 2.0f, rect.height / 2.0f);
-				//transform.sizeDelta = new Vector2 (rect.height, 2f);
-				//transform.localEulerAngles = new Vector3 (0, 0, angle);
-			}
-
 		public Axe direction (Vector2 d)
 			{
 				_direction = d;

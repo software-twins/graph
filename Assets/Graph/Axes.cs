@@ -4,40 +4,52 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[ RequireComponent (typeof (RectTransform)) ]
+
 public class Axes : MonoBehaviour
 	{
-		private GameObject [] y_axes;
+		private GameObject [] y_axes, x_axes;
 		
 		void Awake ()
 			{
-				y_axes = new GameObject [10];
-				Debug.Log ("Start " + y_axes + "-" + y_axes.Length);
+				y_axes = new GameObject [9];
 				
 				for ( int i = 0; i < y_axes.Length; i ++ )
 					{
 						(y_axes [i] = new GameObject ()).name = "YAxis." + i.ToString ();
 						
-						y_axes [i].transform.parent = gameObject.transform;
+						y_axes [i].transform.SetParent (gameObject.transform, false);
 						y_axes [i].AddComponent <Axe> ().direction (new Vector2 (1.0f, 0.0f)); 
+
+														
+						RectTransform transform = y_axes [i].GetComponent <RectTransform> ();
+
+					
+						//transform.anchoredPosition = new Vector2 (0.0f, 0.0f);
+						transform.pivot = new Vector2 (0.5f, 0.0f); 
+						transform.sizeDelta = new Vector2 (10.0f, 0.0f); 
+				
+						transform.anchorMin = new Vector2 ((i + 1) / 10.0f, 0.0f);
+						transform.anchorMax = new Vector2 ((i + 1) / 10.0f, 1.0f);
 					}
-			}
-
-		public void geometry (Rect rect)
-			{
-				float length = rect.height - 10;
-
-				Debug.Log (y_axes + "-");
-				/** provide text position and size using RectTransform */
-		int i = 0;
-        		foreach (GameObject item in y_axes)
+/*
+				x_axes = new GameObject [9];
+				for ( int i = 0; i < x_axes.Length; i ++ )
 					{
-						Debug.Log ("! " + item + " " + item.GetComponent <Axe> ());
+						(x_axes [i] = new GameObject ()).name = "XAxis." + i.ToString ();
 						
-						Vector2 v  = new Vector2 (rect.width / y_axes.Length * i ++ , 0.0f);					
-	
-						item.GetComponent <Axe> ().geometry (v, length);
-					}
-						
+						x_axes [i].transform.SetParent (gameObject.transform, false);
+						x_axes [i].AddComponent <Axe> ().direction (new Vector2 (1.0f, 0.0f)); 
+
+						RectTransform transform = x_axes [i].GetComponent <RectTransform> ();
+
+						//transform.anchoredPosition = new Vector2 (0.0f, 0.0f);
+						transform.pivot = new Vector2 (0.5f, 0.0f); 
+						transform.sizeDelta = new Vector2 (-20.0f, 10.0f); 
+				
+						transform.anchorMin = new Vector2 (0.0f, (i + 1) / 10.0f);
+						transform.anchorMax = new Vector2 (1.0f, (i + 1) / 10.0f);
+					}*/
 			}
 	
 		public Axes initialize ()
