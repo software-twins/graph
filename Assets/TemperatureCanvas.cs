@@ -18,22 +18,33 @@ public class TemperatureCanvas : MonoBehaviour
         		canvas = GetComponent <Canvas> ();
 				canvas.renderMode = RenderMode.ScreenSpaceCamera;
 	
-				(graph = new GameObject ()).name = "Test Graph";
+				(graph = new GameObject ()).name = "Test Graph.1";
 				
 				//graph.transform.parent = canvas.transform;
 				graph.transform.SetParent (canvas.transform, false);
 				/** set text component properties */
-				graph.AddComponent <Graph> ().initialize (canvas);
+				graph.AddComponent <Graph> ().anchors (new Vector2 (0.0f, 0.0f), new Vector2 (0.5f, 0.5f));
 
-				RectTransform transform = graph.GetComponent <RectTransform> ();
+				(graph = new GameObject ()).name = "Test Graph.2";
+				
+				//graph.transform.parent = canvas.transform;
+				graph.transform.SetParent (canvas.transform, false);
+				/** set text component properties */
+				graph.AddComponent <Graph> ().anchors (new Vector2 (0.5f, 0.5f), new Vector2 (1.0f, 1.0f));
 
-				transform.anchoredPosition = new Vector2 (10.0f, 10.0f); 
-				transform.pivot = new Vector2 (0.0f, 0.0f); //rect.width / 4.0f, rect.height / 4.0f, 0.0f));
+				(graph = new GameObject ()).name = "Test Graph.3";
+				
+				//graph.transform.parent = canvas.transform;
+				graph.transform.SetParent (canvas.transform, false);
+				/** set text component properties */
+				graph.AddComponent <Graph> ().anchors (new Vector2 (0.0f, 0.5f), new Vector2 (0.5f, 1.0f));
 
-				transform.anchorMin = new Vector2 (0.0f, 0.0f);
-				transform.anchorMax = new Vector2 (0.5f, 0.5f);
-
-				transform.sizeDelta = new Vector2 (20.0f, 20.0f);
+				(graph = new GameObject ()).name = "Test Graph.4";
+				
+				//graph.transform.parent = canvas.transform;
+				graph.transform.SetParent (canvas.transform, false);
+				/** set text component properties */
+				graph.AddComponent <Graph> ().anchors (new Vector2 (0.5f, 0.0f), new Vector2 (1.0f, 0.5f));
 			}
 
 		private Vector2 size;
