@@ -7,34 +7,31 @@ using UnityEngine.UI;
 
 public abstract class Axe : MonoBehaviour
 	{
-		protected GameObject line, text;
+		protected GameObject _line, _text;
 						
 		void Awake ()
 			{
-				(line = new GameObject ()).name = "Line";				
-				line.transform.SetParent (gameObject.transform, false);
+				(_line = new GameObject ()).name = "Line";				
+				_line.transform.SetParent (gameObject.transform, false);
 				
-				line.AddComponent <Image> ().color = Color.red;
+				_line.AddComponent <Image> ().color = Color.red;
 
-				(text = new GameObject ()).name = "Signature";
-				text.transform.SetParent (gameObject.transform, false);
+				(_text = new GameObject ()).name = "Signature";
+				_text.transform.SetParent (gameObject.transform, false);
 
-				Text t = text.AddComponent <Text> ();
+				Text t = _text.AddComponent <Text> ();
 				
-       			t.font = (Font) Resources.GetBuiltinResource (typeof (Font), "Arial.ttf");
-				t.text = value.ToString ();
-       			t.fontSize = 9;
-        		t.alignment = TextAnchor.MiddleCenter;
+				t.fontSize = 9;       			
+				t.alignment = TextAnchor.MiddleCenter;
+				t.font = (Font) Resources.GetBuiltinResource (typeof (Font), "Arial.ttf");
 			}
-		
-		protected float value = 100.0f;
 		
 		abstract public Axe anchors (float position);
 
 		/** not used yet, this is a candidate for an exception */
-		public Axe position (float p)
+		public Axe value (float v)
 			{
-				_position = p;
+				_text.GetComponent <Text> ().text = v.ToString (); 
 				return this;
 			}
 	}
@@ -63,7 +60,7 @@ public class XAxe : Axe
 		
 				/** ... now we bind the elements that the container contains - the line and the caption
 				 *  to it; their parent is the container; get the line component */
-				transform = line.GetComponent <RectTransform> ();
+				transform = _line.GetComponent <RectTransform> ();
 				
 				/** we anchor it in the center of the height so that the same distance
 				 *  from the edges of the parent container will recede from the top and bottom */
@@ -79,7 +76,7 @@ public class XAxe : Axe
 				transform.sizeDelta = new Vector2 (1.0f, -20.0f);
 
 				/** ... now get the line signature component */
-				transform = text.GetComponent <RectTransform> (); 
+				transform = _text.GetComponent <RectTransform> (); 
 
 				/** bind the caption to the line across the entire width of the container, and
 				 * the height is determined by the height of the text how to get it */
@@ -103,7 +100,7 @@ public class YAxe : Axe
 				RectTransform transform = GetComponent <RectTransform> ();
 
 				/** the anchor point is defined as the midpoint of the bottom edge of the container
-				 *  rectangle along the x-axis */
+				 *  rectangle along the y-axis */
 				transform.pivot = new Vector2 (0.0f, 0.5f); 
 				/** the x-dimension is defined as the width of the axis label text;
 				 *  15.0 matches Arial font size 9 */
@@ -118,7 +115,7 @@ public class YAxe : Axe
 
 				/** ... now we bind the elements that the container contains - the line and the caption
 				 *  to it; their parent is the container; get the line component */
-				transform = line.GetComponent <RectTransform> ();
+				transform = _line.GetComponent <RectTransform> ();
 
 				/** we anchor it in the center of the height so that the same distance
 				 *  from the edges of the parent container will recede from the top and bottom */
@@ -126,7 +123,7 @@ public class YAxe : Axe
 				
 				/** stretch the line from the center to the top and bottom of the parent container ... */
 				transform.anchorMin = new Vector2 (0.0f, 0.5f);
-				/** ... at the center of the face, which is located along the x-axis */
+				/** ... at the center of the face, which is located along the y-axis */
 				transform.anchorMax = new Vector2 (1.0f, 0.5f);
 
 				/** the length of the line is determined by 20.0 less than the length of the container
@@ -134,7 +131,7 @@ public class YAxe : Axe
 				transform.sizeDelta = new Vector2 (-20.0f, 1.0f); 
 
 				/** ... now get the line signature component */
-				transform = text.GetComponent <RectTransform> (); 
+				transform = _text.GetComponent <RectTransform> (); 
 
 				/** bind the caption to the line across the entire width of the container, and
 				 * the height is determined by the height of the text how to get it */

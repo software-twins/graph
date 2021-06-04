@@ -8,28 +8,30 @@ using TMPro;
 
 public class Axes : MonoBehaviour
 	{
-		private GameObject [] y_axes, x_axes;
+		private GameObject [] _y_axes, _x_axes;
 		
 		void Awake ()
 			{
-				y_axes = new GameObject [9];
+				_y_axes = new GameObject [9];
 				
-				for ( int i = 0; i < y_axes.Length; i ++ )
+				for ( int i = 0; i < _y_axes.Length; i ++ )
 					{
-						(y_axes [i] = new GameObject ()).name = "YAxis." + i.ToString ();
-						y_axes [i].transform.SetParent (gameObject.transform, false);
+						(_y_axes [i] = new GameObject ()).name = "YAxis." + i.ToString ();
+						_y_axes [i].transform.SetParent (gameObject.transform, false);
 						
-						Axe a = y_axes [i].AddComponent <XAxe> ().anchors ((i + 1) / 10.0f);
+						float position = 0.05f + (float) i / _y_axes.Length;
+						_y_axes [i].AddComponent <XAxe> ().value (i * 100.0f).anchors (position);
 					}
 						
-				x_axes = new GameObject [9];
+				_x_axes = new GameObject [9];
 
-				for ( int i = 0; i < x_axes.Length; i ++ )
+				for ( int i = 0; i < _x_axes.Length; i ++ )
 					{
-						(x_axes [i] = new GameObject ()).name = "XAxis." + i.ToString ();
-						x_axes [i].transform.SetParent (gameObject.transform, false);
-						
-						Axe a = x_axes [i].AddComponent <YAxe> ().anchors ((i + 1) / 10.0f);
+						(_x_axes [i] = new GameObject ()).name = "XAxis." + i.ToString ();
+						_x_axes [i].transform.SetParent (gameObject.transform, false);
+
+						float position = 0.05f + (float) i / _x_axes.Length;
+						_x_axes [i].AddComponent <YAxe> ().value (i * 20.0f).anchors (position);
 					}
 			}
 	
@@ -44,4 +46,10 @@ public class Axes : MonoBehaviour
 				
 				return this;
 			}
+
+		public Axes value (float x, float y)
+			{
+				return this;
+			}
+	
 	}

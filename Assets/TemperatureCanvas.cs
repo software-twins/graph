@@ -23,47 +23,11 @@ public class TemperatureCanvas : MonoBehaviour
 				//graph.transform.parent = canvas.transform;
 				graph.transform.SetParent (canvas.transform, false);
 				/** set text component properties */
-				graph.AddComponent <Graph> ().anchors (new Vector2 (0.0f, 0.0f), new Vector2 (0.5f, 0.5f));
-
-				(graph = new GameObject ()).name = "Test Graph.2";
-				
-				//graph.transform.parent = canvas.transform;
-				graph.transform.SetParent (canvas.transform, false);
-				/** set text component properties */
-				graph.AddComponent <Graph> ().anchors (new Vector2 (0.5f, 0.5f), new Vector2 (1.0f, 1.0f));
-
-				(graph = new GameObject ()).name = "Test Graph.3";
-				
-				//graph.transform.parent = canvas.transform;
-				graph.transform.SetParent (canvas.transform, false);
-				/** set text component properties */
-				graph.AddComponent <Graph> ().anchors (new Vector2 (0.0f, 0.5f), new Vector2 (0.5f, 1.0f));
-
-				(graph = new GameObject ()).name = "Test Graph.4";
-				
-				//graph.transform.parent = canvas.transform;
-				graph.transform.SetParent (canvas.transform, false);
-				/** set text component properties */
-				graph.AddComponent <Graph> ().anchors (new Vector2 (0.5f, 0.0f), new Vector2 (1.0f, 0.5f));
+				graph.AddComponent <Graph> ().anchors (new Vector2 (0.0f, 0.0f), new Vector2 (0.5f, 0.5f))
+											 .value (0.0f, 10.0f);
 			}
 
 		private Vector2 size;
-
-		void Update ()
-			{
-				Vector2 s = new Vector2 (canvas.pixelRect.width, canvas.pixelRect.height);
-
-				//Debug.Log (graph.transform + " " + canvas.transform);
-
-				if ( size != s )
-					{
-						
-			//Debug.Log (graph.transform.width + " " + canvas.transform.width);
-						size = s;
-						//graph.GetComponent <CanvasElement> ().geometry (canvas.pixelRect);
-						//Debug.Log (canvas.pixelRect);
-					}
-			}
 
 		public void show ()
     		{
