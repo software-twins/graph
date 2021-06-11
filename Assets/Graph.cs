@@ -1,0 +1,192 @@
+﻿using System;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+[ RequireComponent (typeof (RectTransform)) ]
+
+public class Graph : CanvasElement
+	{
+		private GameObject _background, _axes;
+			
+		void Start ()
+			{
+				background ();
+
+				for ( int i = 0; i < 10 ; i ++  )
+						x (axe (_background, i * 10), 0.05f + 0.10f * i);
+
+				for (int i = 0; i < 7; i ++ )
+						y (axe (_background, i * 5), 0.07f + 0.14f * i);
+			}
+
+		private void background ()
+			{
+				(GameObject b = new GameObject ()).name = "Background";
+				b.transform.SetParent (gameObject.transform, false);
+
+				/** add image as background ... */
+				b.AddComponent <Image> ().color = new Vector4 (0.0f, 0.0f, 1.0f, 0.05f); 
+
+				/** ... and setting for him anchors, for this first we receive rectTransform component... */
+				RectTransform transform = _background.GetComponent <RectTransform> ();
+
+				/** ... and set anchors values; here we set the image to the full length and width of the
+				 * parent component */
+				transform.anchoredPosition = transform.pivot = transform.sizeDelta = new Vector2 (0.0f, 0.0f);				
+				/** the anchor point is set to the bottom left corner, and since the anchors are anchored
+				 *  to the edges of the parent object and the background image should overlap the
+				 *  entire parent object, the property SizeDelta is set to 0.0f */
+				transform.anchorMin = new Vector2 (0.0f, 0.0f);
+				transform.anchorMax = new Vector2 (1.0f, 1.0f);
+			}
+
+		private GameObject axe (GameObject parent, int value)
+			{
+				GameObject axe = new GameObject ();
+				axe.transform.SetParent (parent.transform, false); 
+
+				GameObject line = new GameObject ("Image");
+				line.transform.SetParent (axe.transform, false);
+				
+				line.AddComponent <Image> ().color = Color.red;
+						
+				GameObject text = new GameObject ("Signature");
+				text.transform.SetParent (axe.transform, false);
+
+				Text t = text.AddComponent <Text> ();
+				
+				t.fontSize = 9;       			
+				t.alignment = TextAnchor.MiddleCenter;
+				t.font = (Font) Resources.GetBuiltinResource (typeof (Font), "Arial.ttf");
+				t.text = value.ToString ();
+
+				return axe;
+			}
+
+		private void x (GameObject source, float position)
+			{
+				source.name = "X.Line." + position.ToString ();
+
+				RectTransform transform;
+
+				transform = source.AddComponent <RectTransform> ();
+				/** the anchor point is defined as the midpoint of the bottom edge of the container
+				 *  rectangle along the x-axis */
+				transform.pivot = new Vector2 (0.5f, 0.0f); 
+				/** the x-dimension is defined as the width of the axis label text;
+				 *  15.0 matches Arial font size 9 */
+				transform.sizeDelta = new Vector2 (15.0f, 0.0f); 
+
+				/** determine the position of the grid line along the y-axis and snap its edges to the
+				 *  height of the parent element; for this, the y coordinate for the minimum anchor is
+				 *  defined as 0.0f ... */
+				transform.anchorMin = new Vector2 (position, 0.0f);
+				/** ... and for maximu anchor as 1.0f */
+				transform.anchorMax = new Vector2 (position, 1.0f);
+						
+				transform = source.transform.GetChild (0).GetComponent <RectTransform> ();
+				
+				/** the anchor point is defined as the midpoint of the bottom edge of the container
+				 *  rectangle along the x-axis */
+				transform.pivot = new Vector2 (0.5f, 0.5f); 
+				/** the x-dimension is defined as the width of the axis label text;
+				 *  15.0 matches Arial font size 9 */
+				transform.sizeDelta = new Vector2 (1.0f, -20.0f); 
+				
+				/** determine the position of the grid line along the y-axis and snap its edges to the
+				 *  height of the parent element; for this, the y coordinate for the minimum anchor is
+				 *  defined as 0.0f ... */
+				transform.anchorMin = new Vector2 (0.5f, 0.0f);
+				/** ... and for maximu anchor as 1.0f */
+				transform.anchorMax = new Vector2 (0.5f, 1.0f);
+
+				transform = source.transform.GetChild (1).GetComponent <RectTransform> ();
+				
+				/** the anchor point is defined as the midpoint of the bottom edge of the container
+				 *  rectangle along the x-axis */
+				//	transform.pivot = new Vector2 (0.5f, 0.0f); 
+				/** the x-dimension is defined as the width of the axis label text;
+				 *  15.0 matches Arial font size 9 */
+				transform.sizeDelta = new Vector2 (0.0f, 15.0f); 
+				
+				/** determine the position of the grid line along the y-axis and snap its edges to the
+				 *  height of the parent element; for this, the y coordinate for the minimum anchor is
+				 *  defined as 0.0f ... */
+				transform.anchorMin = new Vector2 (0.0f, 0.0f);//position, 0.0f);
+				/** ... and for maximu anchor as 1.0f */
+				transform.anchorMax = new Vector2 (1.0f, 0.0f);
+			}
+
+		private void y (GameObject source, float position)
+			{
+				source.name = "Y.Line." + position.ToString ();
+
+				RectTransform transform;
+
+				transform = source.AddComponent <RectTransform> ();
+				/** the anchor point is defined as the midpoint of the bottom edge of the container
+				 *  rectangle along the x-axis */
+				transform.pivot = new Vector2 (0.0f, 0.5f); 
+				/** the x-dimension is defined as the width of the axis label text;
+				 *  15.0 matches Arial font size 9 */
+				transform.sizeDelta = new Vector2 (0.0f, 15.0f); 
+
+				/** determine the position of the grid line along the y-axis and snap its edges to the
+				 *  height of the parent element; for this, the y coordinate for the minimum anchor is
+				 *  defined as 0.0f ... */
+				transform.anchorMin = new Vector2 (0.0f, position);
+				/** ... and for maximu anchor as 1.0f */
+				transform.anchorMax = new Vector2 (1.0f, position);
+						
+				transform = source.transform.GetChild (0).GetComponent <RectTransform> ();
+				
+				/** the anchor point is defined as the midpoint of the bottom edge of the container
+				 *  rectangle along the x-axis */
+				transform.pivot = new Vector2 (0.5f, 0.5f); 
+				/** the x-dimension is defined as the width of the axis label text;
+				 *  15.0 matches Arial font size 9 */
+				transform.sizeDelta = new Vector2 (-20.0f, 1.0f); 
+				
+				/** determine the position of the grid line along the y-axis and snap its edges to the
+				 *  height of the parent element; for this, the y coordinate for the minimum anchor is
+				 *  defined as 0.0f ... */
+				transform.anchorMin = new Vector2 (0.0f, 0.5f);
+				/** ... and for maximu anchor as 1.0f */
+				transform.anchorMax = new Vector2 (1.0f, 0.5f);
+
+				transform = source.transform.GetChild (1).GetComponent <RectTransform> ();
+				
+				/** the anchor point is defined as the midpoint of the bottom edge of the container
+				 *  rectangle along the x-axis */
+				//	transform.pivot = new Vector2 (0.5f, 0.0f); 
+				/** the x-dimension is defined as the width of the axis label text;
+				 *  15.0 matches Arial font size 9 */
+				transform.sizeDelta = new Vector2 (15.0f, 0.0f); 
+				
+				/** determine the position of the grid line along the y-axis and snap its edges to the
+				 *  height of the parent element; for this, the y coordinate for the minimum anchor is
+				 *  defined as 0.0f ... */
+				transform.anchorMin = new Vector2 (0.0f, 0.0f);//position, 0.0f);
+				/** ... and for maximu anchor as 1.0f */
+				transform.anchorMax = new Vector2 (0.0f, 1.0f);
+			}
+
+		public Graph anchors (Vector2 min, Vector2 max)
+			{
+				RectTransform transform = GetComponent <RectTransform> ();
+
+				transform.anchoredPosition = new Vector2 (10.0f, 10.0f); 
+				transform.pivot = new Vector2 (0.0f, 0.0f);
+
+				transform.anchorMin = min;
+				transform.anchorMax = max;
+
+				transform.sizeDelta = new Vector2 (-20.0f, -20.0f);
+
+				Debug.Log ("In Graph.anchors");
+				
+				return this;
+			}
+
+	}

@@ -9,7 +9,7 @@ public class TemperatureCanvas : MonoBehaviour
 	{
 		private Canvas canvas;
 		
-		private GameObject graph;
+		private GameObject _graph;
 		
 	    // Start is called before the first frame update
     	void Start ()
@@ -18,13 +18,14 @@ public class TemperatureCanvas : MonoBehaviour
         		canvas = GetComponent <Canvas> ();
 				canvas.renderMode = RenderMode.ScreenSpaceCamera;
 	
-				(graph = new GameObject ()).name = "Test Graph.1";
-				
+				(_graph = new GameObject ()).name = "Test Graph.1";
 				//graph.transform.parent = canvas.transform;
-				graph.transform.SetParent (canvas.transform, false);
+				_graph.transform.SetParent (canvas.transform, false);
+			
 				/** set text component properties */
-				graph.AddComponent <Graph> ().anchors (new Vector2 (0.0f, 0.0f), new Vector2 (0.5f, 0.5f))
-											 .value (0.0f, 10.0f);
+				Graph g = _graph.AddComponent <Graph> ();
+				g.anchors (new Vector2 (0.0f, 0.0f), new Vector2 (0.5f, 0.5f));
+				//g.initialize  (10.0f, 5.0f); 
 			}
 
 		private Vector2 size;
