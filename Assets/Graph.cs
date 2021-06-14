@@ -49,6 +49,23 @@ public class Graph : MonoBehaviour
 				return b;
 			}
 
+		public Graph anchors (Vector2 min, Vector2 max)
+			{
+				RectTransform transform = GetComponent <RectTransform> ();
+
+				transform.anchoredPosition = new Vector2 (10.0f, 10.0f); 
+				transform.pivot = new Vector2 (0.0f, 0.0f);
+
+				transform.anchorMin = min;
+				transform.anchorMax = max;
+
+				transform.sizeDelta = new Vector2 (-20.0f, -20.0f);
+
+				return this;
+			}
+
+		public Rect _rect = new Rect (0.0f, 0.0f, 2.0f, 100.0f);
+
 		private GameObject _axe (GameObject parent, float value)
 			{
 				GameObject axe = new GameObject ();
@@ -180,26 +197,30 @@ public class Graph : MonoBehaviour
 				transform.anchorMax = new Vector2 (0.0f, 1.0f);
 			}
 
-		public Graph anchors (Vector2 min, Vector2 max)
+		private GameObject _circle (Vector2 anch)
 			{
-				RectTransform transform = GetComponent <RectTransform> ();
+		void Awake () {       
+			float sizeValue = (2.0f * Mathf.PI) / theta_scale; 
+			size = (int)sizeValue;
+			size++;
+			lineRenderer = gameObject.AddComponent<LineRenderer>();
+			lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
+			lineRenderer.SetWidth(0.02f, 0.02f); //thickness of line
+			lineRenderer.SetVertexCount(size);      
+		}
 
-				transform.anchoredPosition = new Vector2 (10.0f, 10.0f); 
-				transform.pivot = new Vector2 (0.0f, 0.0f);
-
-				transform.anchorMin = min;
-				transform.anchorMax = max;
-
-				transform.sizeDelta = new Vector2 (-20.0f, -20.0f);
-				
-				return this;
+		void Update () {      
+			Vector3 pos;
+			float theta = 0f;
+			for(int i = 0; i < size; i++){          
+				theta += (2.0f * Mathf.PI * theta_scale);         
+				float x = radius * Mathf.Cos(theta);
+				float y = radius * Mathf.Sin(theta);          
+				x += gameObject.transform.position.x;
+				y += gameObject.transform.position.y;
+				pos = new Vector3(x, y, 0);
+				lineRenderer.SetPosition(i, pos);
 			}
-
-		public Rect _rect = new Rect (0.0f, 0.0f, 2.0f, 100.0f);
-
-		public Graph value (Rect r)
-			{
-				_rect = r;
-				return this;
+		}
 			}
 	}
