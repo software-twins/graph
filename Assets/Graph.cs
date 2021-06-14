@@ -5,31 +5,37 @@ using UnityEngine.UI;
 
 [ RequireComponent (typeof (RectTransform)) ]
 
-public class Graph : CanvasElement
+public class Graph : MonoBehaviour 
 	{
-		private GameObject _background, _axes;
-			
 		void Start ()
 			{
-				background ();
+				/** setting up background rect, then ... */
+				GameObject background = _image ();
 
+				/** of the next two cycles, the parameters of the cycles are 
+				 * 10 and 7 determine the number of grid lines; these values are still
+				 * built-in and are not moved to parameters 
+				 */
+						
+				/** ... as part of background setting up horizontal lines of value grid and ... */
 				for ( int i = 0; i < 10 ; i ++  )
-						x (axe (_background, i * 10), 0.05f + 0.10f * i);
-
+						_x (_axe (background, _rect.width / 10.0f * i), 0.05f + 0.10f * i);
+				
+				/**... as part of background setting up vertical lines of value grid; */
 				for (int i = 0; i < 7; i ++ )
-						y (axe (_background, i * 5), 0.07f + 0.14f * i);
+						_y (_axe (background, i * 5), 0.07f + 0.14f * i);
 			}
 
-		private void background ()
+		private GameObject _image ()
 			{
-				(GameObject b = new GameObject ()).name = "Background";
+				GameObject b = new GameObject ("Background");
 				b.transform.SetParent (gameObject.transform, false);
 
 				/** add image as background ... */
 				b.AddComponent <Image> ().color = new Vector4 (0.0f, 0.0f, 1.0f, 0.05f); 
 
 				/** ... and setting for him anchors, for this first we receive rectTransform component... */
-				RectTransform transform = _background.GetComponent <RectTransform> ();
+				RectTransform transform = b.GetComponent <RectTransform> ();
 
 				/** ... and set anchors values; here we set the image to the full length and width of the
 				 * parent component */
@@ -39,9 +45,11 @@ public class Graph : CanvasElement
 				 *  entire parent object, the property SizeDelta is set to 0.0f */
 				transform.anchorMin = new Vector2 (0.0f, 0.0f);
 				transform.anchorMax = new Vector2 (1.0f, 1.0f);
+
+				return b;
 			}
 
-		private GameObject axe (GameObject parent, int value)
+		private GameObject _axe (GameObject parent, float value)
 			{
 				GameObject axe = new GameObject ();
 				axe.transform.SetParent (parent.transform, false); 
@@ -64,7 +72,7 @@ public class Graph : CanvasElement
 				return axe;
 			}
 
-		private void x (GameObject source, float position)
+		private void _x (GameObject source, float position)
 			{
 				source.name = "X.Line." + position.ToString ();
 
@@ -118,7 +126,7 @@ public class Graph : CanvasElement
 				transform.anchorMax = new Vector2 (1.0f, 0.0f);
 			}
 
-		private void y (GameObject source, float position)
+		private void _y (GameObject source, float position)
 			{
 				source.name = "Y.Line." + position.ToString ();
 
@@ -183,10 +191,15 @@ public class Graph : CanvasElement
 				transform.anchorMax = max;
 
 				transform.sizeDelta = new Vector2 (-20.0f, -20.0f);
-
-				Debug.Log ("In Graph.anchors");
 				
 				return this;
 			}
 
+		public Rect _rect = new Rect (0.0f, 0.0f, 2.0f, 100.0f);
+
+		public Graph value (Rect r)
+			{
+				_rect = r;
+				return this;
+			}
 	}
