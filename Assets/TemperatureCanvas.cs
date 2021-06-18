@@ -23,7 +23,7 @@ public class TemperatureCanvas : MonoBehaviour
 				_graph.transform.SetParent (canvas.transform, false);
 			
 				/** set text component properties */
-				Graph g = _graph.AddComponent <Graph> ().anchors (new Vector2 (0.0f, 0.0f), new Vector2 (0.5f, 0.5f)).value (new Rect (0.0f, 0.0f, 100.0f, 30.0f));
+				//Graph g = _graph.AddComponent <Graph> ().anchors (new Vector2 (0.0f, 0.0f), new Vector2 (0.5f, 0.5f));
 				//g.initialize  (10.0f, 5.0f); 
 			}
 

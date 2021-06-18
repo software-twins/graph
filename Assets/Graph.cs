@@ -24,6 +24,11 @@ public class Graph : MonoBehaviour
 				/**... as part of background setting up vertical lines of value grid; */
 				for (int i = 0; i < 7; i ++ )
 						_y (_axe (background, i * 5), 0.07f + 0.14f * i);
+
+				_data = new GameObject ("Data");
+				_data.transform.SetParent (gameObject.transform, false);
+
+		        _circle (10.0f);
 			}
 
 		private GameObject _image ()
@@ -197,30 +202,37 @@ public class Graph : MonoBehaviour
 				transform.anchorMax = new Vector2 (0.0f, 1.0f);
 			}
 
-		private GameObject _circle (Vector2 anch)
-			{
-		void Awake () {       
-			float sizeValue = (2.0f * Mathf.PI) / theta_scale; 
-			size = (int)sizeValue;
-			size++;
-			lineRenderer = gameObject.AddComponent<LineRenderer>();
-			lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
-			lineRenderer.SetWidth(0.02f, 0.02f); //thickness of line
-			lineRenderer.SetVertexCount(size);      
-		}
+		private GameObject _data;
 
-		void Update () {      
-			Vector3 pos;
-			float theta = 0f;
-			for(int i = 0; i < size; i++){          
-				theta += (2.0f * Mathf.PI * theta_scale);         
-				float x = radius * Mathf.Cos(theta);
-				float y = radius * Mathf.Sin(theta);          
-				x += gameObject.transform.position.x;
-				y += gameObject.transform.position.y;
-				pos = new Vector3(x, y, 0);
-				lineRenderer.SetPosition(i, pos);
-			}
-		}
+		private GameObject _circle (float value)
+			{
+				GameObject circle = new GameObject (value.ToString ());
+				circle.transform.SetParent (_data.transform, false);
+
+				LineRenderer line = circle.AddComponent <LineRenderer> ();
+
+		        line.startColor = line.endColor = Color.red;
+ 		        line.startWidth = line.endWidth = 2.0f;
+ 
+        		line.positionCount = 10;
+			
+
+				float theta = 0f;
+				
+				for ( int i = 0; i < 10; i ++ )
+					{          
+						theta += (2.0f * Mathf.PI);         
+						
+						float x = 50 + 10.0f * Mathf.Cos (i);
+						float y = 50 + 10.0f * Mathf.Sin (i);          
+						
+						//x += circle.transform.position.x;
+						//y += circle.transform.position.y;
+						
+						line.SetPosition (i, new Vector3 (x, y, 0));
+
+					}
+				
+				return circle;
 			}
 	}
