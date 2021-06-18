@@ -28,7 +28,7 @@ public class Graph : MonoBehaviour
 				_data = new GameObject ("Data");
 				_data.transform.SetParent (gameObject.transform, false);
 
-		        _circle (10.0f);
+                _circle (10.0f, 10.0f).transform.SetParent (_data.transform, false);
 			}
 
 		private GameObject _image ()
@@ -204,34 +204,39 @@ public class Graph : MonoBehaviour
 
 		private GameObject _data;
 
-		private GameObject _circle (float value)
+        private Sprite _point_sprite;
+
+        private GameObject _circle (float x, float y)
 			{
-				GameObject circle = new GameObject (value.ToString ());
-				circle.transform.SetParent (_data.transform, false);
+                GameObject circle = new GameObject ("Point." + x.ToString () + y.ToString ());
+				
+                Vector2 pivot = new Vector2 (0.5f, 0.5f);
+                Rect tRect = new Rect (0, 0, 8, 8);
+                
+                Texture2D texture = new Texture2D (12, 12);
+                Sprite newSprite = Sprite.Create (bmp, tRect, pivot);
 
-				LineRenderer line = circle.AddComponent <LineRenderer> ();
+                Image image = circle.AddComponent <Image> ();
+                image.sprite = _point_sprite;
 
-		        line.startColor = line.endColor = Color.red;
- 		        line.startWidth = line.endWidth = 2.0f;
- 
-        		line.positionCount = 10;
+		      //  line.positionCount = 10;
 			
 
-				float theta = 0f;
+				//float theta = 0f;
 				
-				for ( int i = 0; i < 10; i ++ )
-					{          
-						theta += (2.0f * Mathf.PI);         
+				//for ( int i = 0; i < 10; i ++ )
+					//{          
+					//	theta += (2.0f * Mathf.PI);         
 						
-						float x = 50 + 10.0f * Mathf.Cos (i);
-						float y = 50 + 10.0f * Mathf.Sin (i);          
+					//	float x = 50 + 10.0f * Mathf.Cos (i);
+					//	float y = 50 + 10.0f * Mathf.Sin (i);          
 						
 						//x += circle.transform.position.x;
 						//y += circle.transform.position.y;
 						
-						line.SetPosition (i, new Vector3 (x, y, 0));
+					//	line.SetPosition (i, new Vector3 (x, y, 0));
 
-					}
+				//	}
 				
 				return circle;
 			}
