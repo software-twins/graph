@@ -28,7 +28,19 @@ public class Graph : MonoBehaviour
 				_data = new GameObject ("Data");
 				_data.transform.SetParent (gameObject.transform, false);
 
-                _circle (10.0f, 10.0f).transform.SetParent (_data.transform, false);
+                RectTransform transform = _data.AddComponent <RectTransform> ();
+
+                transform.anchorMin = new Vector2 (0.05f, 0.07f);
+                transform.anchorMax = new Vector2 (0.95f, 0.91f);
+
+              transform.anchoredPosition = transform.pivot = transform.sizeDelta = new Vector2 (0.0f, 0.0f);    
+                
+                transform.pivot = new Vector2 (0.0f, 0.0f);
+              //  transform.anchoredPosition = new Vector2 (_rect.width / 10.0f, 0.07f);
+                
+              //  transform.sizeDelta = new Vector2 (10.0f, 10.0f);
+
+                _point (0.0f, 0.0f).transform.SetParent (_data.transform, false);
 			}
 
 		private GameObject _image ()
@@ -206,38 +218,20 @@ public class Graph : MonoBehaviour
 
         private Sprite _point_sprite;
 
-        private GameObject _circle (float x, float y)
+        private GameObject _point (float x, float y)
 			{
-                GameObject circle = new GameObject ("Point." + x.ToString () + y.ToString ());
-				
-                Vector2 pivot = new Vector2 (0.5f, 0.5f);
-                Rect tRect = new Rect (0, 0, 8, 8);
-                
-                Texture2D texture = new Texture2D (12, 12);
-                Sprite newSprite = Sprite.Create (bmp, tRect, pivot);
-
-                Image image = circle.AddComponent <Image> ();
-                image.sprite = _point_sprite;
-
-		      //  line.positionCount = 10;
+                GameObject point = new GameObject ("Point." + x.ToString ()
+                                                            + y.ToString ());
 			
+                Image image = point.AddComponent <Image> ();
 
-				//float theta = 0f;
-				
-				//for ( int i = 0; i < 10; i ++ )
-					//{          
-					//	theta += (2.0f * Mathf.PI);         
-						
-					//	float x = 50 + 10.0f * Mathf.Cos (i);
-					//	float y = 50 + 10.0f * Mathf.Sin (i);          
-						
-						//x += circle.transform.position.x;
-						//y += circle.transform.position.y;
-						
-					//	line.SetPosition (i, new Vector3 (x, y, 0));
-
-				//	}
-				
-				return circle;
+                RectTransform transform = point.GetComponent <RectTransform> ();
+              
+                transform.anchoredPosition = new Vector2 (0.05f, 0.07f); 
+                transform.pivot = new Vector2 (0.5f, 0.5f);
+          
+                transform.sizeDelta = new Vector2 (3.0f, 3.0f);
+			
+				return point;
 			}
 	}
