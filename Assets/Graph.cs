@@ -10,7 +10,7 @@ public class Graph : MonoBehaviour
 		void Start ()
 			{
 				/** setting up background rect, then ... */
-				GameObject background = _image ();
+                GameObject background = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.05f), new Vector2 (0.0f, 0.0f), new Vector2 (1.0f, 1.0f) );
 
 				/** of the next two cycles, the parameters of the cycles are 
 				 * 10 and 7 determine the number of grid lines; these values are still
@@ -25,31 +25,21 @@ public class Graph : MonoBehaviour
 				for (int i = 0; i < 7; i ++ )
 						_y (_axe (background, i * 5), 0.07f + 0.14f * i);
 
-				_data = new GameObject ("Data");
-				_data.transform.SetParent (gameObject.transform, false);
-
-                RectTransform transform = _data.AddComponent <RectTransform> ();
-
-                transform.anchorMin = new Vector2 (0.05f, 0.07f);
-                transform.anchorMax = new Vector2 (0.95f, 0.91f);
-
-              transform.anchoredPosition = transform.pivot = transform.sizeDelta = new Vector2 (0.0f, 0.0f);    
-                
-                transform.pivot = new Vector2 (0.0f, 0.0f);
-              //  transform.anchoredPosition = new Vector2 (_rect.width / 10.0f, 0.07f);
-                
-              //  transform.sizeDelta = new Vector2 (10.0f, 10.0f);
-
-                _point (0.0f, 0.0f).transform.SetParent (_data.transform, false);
+				_data = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.15f), new Vector2 (0.05f, 0.07f), new Vector2 (0.95f, 0.91f) );
+                            
+                for ( int i= 0; i < 100; i ++ )
+                    {
+                        _point (_data, i / 100.0f, 0.5f + 0.3f* Mathf.Cos (i));//.transform.SetParent (_data.transform, false);
+                    }
 			}
 
-		private GameObject _image ()
+		private GameObject _image (Vector4 color, Vector2 min, Vector2 max)
 			{
-				GameObject b = new GameObject ("Background");
+                GameObject b = new GameObject ("I." + color.ToString ());
 				b.transform.SetParent (gameObject.transform, false);
 
 				/** add image as background ... */
-				b.AddComponent <Image> ().color = new Vector4 (0.0f, 0.0f, 1.0f, 0.05f); 
+				b.AddComponent <Image> ().color = color; //new Vector4 (0.0f, 0.0f, 1.0f, 0.05f); 
 
 				/** ... and setting for him anchors, for this first we receive rectTransform component... */
 				RectTransform transform = b.GetComponent <RectTransform> ();
@@ -60,8 +50,8 @@ public class Graph : MonoBehaviour
 				/** the anchor point is set to the bottom left corner, and since the anchors are anchored
 				 *  to the edges of the parent object and the background image should overlap the
 				 *  entire parent object, the property SizeDelta is set to 0.0f */
-				transform.anchorMin = new Vector2 (0.0f, 0.0f);
-				transform.anchorMax = new Vector2 (1.0f, 1.0f);
+				transform.anchorMin = min; //new Vector2 (0.0f, 0.0f);
+				transform.anchorMax = max; //new Vector2 (1.0f, 1.0f);
 
 				return b;
 			}
@@ -218,19 +208,22 @@ public class Graph : MonoBehaviour
 
         private Sprite _point_sprite;
 
-        private GameObject _point (float x, float y)
+        private GameObject _point (GameObject o, float x, float y)
 			{
                 GameObject point = new GameObject ("Point." + x.ToString ()
                                                             + y.ToString ());
+                point.transform.SetParent (o.transform, false);
 			
-                Image image = point.AddComponent <Image> ();
+                CircleGraphic circle = point.AddComponent <CircleGraphic> ();
 
+                circle.detail = 8;
+                circle.mode = CircleGraphic.Mode.FillInside;
+                
                 RectTransform transform = point.GetComponent <RectTransform> ();
               
-                transform.anchoredPosition = new Vector2 (0.05f, 0.07f); 
+                transform.anchorMin = transform.anchorMax = new Vector2 (x, y);
                 transform.pivot = new Vector2 (0.5f, 0.5f);
-          
-                transform.sizeDelta = new Vector2 (3.0f, 3.0f);
+                transform.sizeDelta = new Vector2 (4.0f, 4.0f);
 			
 				return point;
 			}
