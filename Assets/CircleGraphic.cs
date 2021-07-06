@@ -49,9 +49,7 @@ public class CircleGraphic : MaskableGraphic
 	    private Vector2 uv = Vector2.zero;
 	    private Color32 color32;
 
-	    private float width = 1f, height = 1f;
-	    private float deltaWidth, deltaHeight;
-	    private float deltaRadians;
+	    private float width = 1f, height = 1f, deltaWidth, deltaHeight, deltaRadians;
 
 	    protected override void OnPopulateMesh ( VertexHelper vh )
 	        {
@@ -187,4 +185,4 @@ public class CircleGraphic : MaskableGraphic
 		        vh.AddTriangle ( 0, triangleIndex - 2, triangleIndex - 1 );
 		        vh.AddTriangle ( 0, triangleIndex - 1, 1 );
 	        }
-    }
+   }
