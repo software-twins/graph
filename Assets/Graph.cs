@@ -11,8 +11,7 @@ public class Graph : MonoBehaviour
 		void Start ()
 			{
 				/** setting up background rect, then ... */
-                GameObject background = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.05f), new Vector2 (0.0f, 0.0f), 
-                                                                                        new Vector2 (1.0f, 1.0f) );
+                GameObject background = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.05f), new Vector2 (0.0f, 0.0f), new Vector2 (1.0f, 1.0f) );
 
 				/** of the next two cycles, the parameters of the cycles are 
 				 * 10 and 7 determine the number of grid lines; these values are still
@@ -25,22 +24,56 @@ public class Graph : MonoBehaviour
 				
 				/**... as part of background setting up vertical lines of value grid; */
 				for (int i = 0; i < 7; i ++ )
-						_y (_axe (background, i * 5), 0.07f + 0.14f * i);
+                        _y (_axe (background, _rect.height / 7.0f * i), 0.07f + /** max value  */ 98.0f / _rect.height / 7.0f * i);
 
-				_data_rect = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.15f), new Vector2 (0.05f, 0.07f), 
-                                                                             new Vector2 (0.95f, 0.91f) );
+                //Debug.Log ("----" + _rect.height);
+
+				_data_rect = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.15f), new Vector2 (0.05f, 0.07f), new Vector2 (0.95f, 0.91f) );
                             
-                for ( int i = 0; i < 30; i ++ )
-                       _points.AddLast (new LinkedListNode < GameObject > (_point (i / 30.0f, 0.5f + 0.3f * Mathf.Cos (i))));
+                for ( int i = 0; i < 10; i ++ )
+                        _points.AddLast (new LinkedListNode < GameObject > (_point (i / 10.0f, _values [i] / _rect.height))); // 0.5f + 0.3f * Mathf.Cos (i))));
 
                 LinkedListNode < GameObject > item = _points.First;
+
+               // int j = 0;
+
+              /*  RectTransform transform = _data_rect.GetComponent < RectTransform > ();
                 
                 while ( item.Next != null )
                     {
-                        _line (item.Value.GetComponent < RectTransform > ().anchorMin, item.Next.Value.GetComponent < RectTransform > ().anchorMin); 
+                         Vector2 a = new Vector2 (50 + j * 50 , ( _values [j] / 100.0f ) * transform.sizeDelta.y);
+                         Vector2 b = new Vector2 (50 + (j + 1) * 50, ( _values [j + 1] / 100.0f ) * transform.sizeDelta.y);
+                        
+                        Debug.Log (" while loop " + a + " " + b );                           
+ 
+                        _line ( a, b ); 
                         item = item.Next;
+                        j ++ ;
+                    }*/
+
+                RectTransform transform = _data_rect.GetComponent < RectTransform > ();
+                
+                float graphHeight = transform.rect.height;
+                float yMaximum = 100f;
+                float xSize = 50f;
+
+                Debug.Log ( " _data-rect " + transform.sizeDelta.y );
+
+                Vector2 lastCircleGameObject = new Vector2 (-1.0f, -1.0f); //null;
+                for ( int i = 0; i < _values.Count-1; i ++ )
+                    {
+                        float xPosition = xSize + i * xSize;
+                        float yPosition = ( _values [i] / yMaximum ) * graphHeight;
+                        
+                        Vector2 circleGameObject = new Vector2 ( xPosition, yPosition );
+                        if ( lastCircleGameObject != new Vector2 (-1.0f, -1.0f) ) 
+                                _line ( lastCircleGameObject, circleGameObject, 
+                                                new Vector2 ((i - 1) / 10.0f, _values [i - 1 ] / _rect.height), 
+                                                new Vector2 (i       / 10.0f, _values [i]      / _rect.height)); // 0.5f + 0.3f * Mathf.Cos (i)))); );
+
+                        lastCircleGameObject = circleGameObject;
                     }
-			}
+            }
 
 		public Graph anchors (Vector2 min, Vector2 max)
 			{
@@ -214,6 +247,8 @@ public class Graph : MonoBehaviour
 				transform.anchorMax = new Vector2 (0.0f, 1.0f);
 			}
 
+        List < int > _values = new List < int > () { 5, 98, 56, 45, 30, 22, 17, 15, 13, 17 };
+
         private GameObject _point (float x, float y)
             {
                 GameObject point = new GameObject ("Point." + x.ToString () + y.ToString ());
@@ -227,27 +262,44 @@ public class Graph : MonoBehaviour
                 RectTransform transform = point.GetComponent <RectTransform> ();
               
                 transform.anchorMin = transform.anchorMax = new Vector2 (x, y);
+                //transform.anchoredPosition = new Vector2 (x, y);
+                
                 transform.pivot = new Vector2 (0.5f, 0.5f);
                 transform.sizeDelta = new Vector2 (4.0f, 4.0f);
             
                 return point;
             }
 
-        private GameObject _line (Vector2 a, Vector2 b)
+        private GameObject _line (Vector2 a, Vector2 b, Vector2 a1, Vector2 b1)
             {
                 GameObject line = new GameObject ("Line", typeof (Image)); 
                 line.transform.SetParent (_data_rect.transform, false);
 
                 line.GetComponent < Image > ().color = new Color (0.0f, 1.0f, 0.0f, 0.5f); 
-                
-                RectTransform transform = line.GetComponent < RectTransform > ();
-                transform.anchorMin = transform.anchorMax = a; //new Vector2 (0.f, 0.5f);
-               // transform.anchoredPosition = new Vector2 (0.5f, 0.5f); //a;// + direction * distance * 0.5f;
 
-                transform.sizeDelta = new Vector2 (150.0f, 3.0f);
-                Debug.Log (a);
-              
-              //  transform.localEulerAngles = new Vector3 (0.0f, 0.0f, GetAngleFromVectorFloat (direction));
+                RectTransform transform = line.GetComponent < RectTransform > ();
+                
+                float distance = Vector2.Distance (a, b); // * 300.0f;
+                
+                Debug.Log (distance + " " +  a + " " + b);
+              //  transform.sizeDelta = new Vector2 (distance, 3.0f);
+
+                Vector2 direction = (b - a).normalized;
+                
+                //transform.anchorMin = transform.anchorMax = new Vector2 (0.0f, 0.0f);
+                
+                //transform.anchoredPosition = a + direction * distance * 0.5f;
+                                
+                //transform.localEulerAngles = new Vector3 (0.0f, 0.0f, GetAngleFromVectorFloat (direction));
+
+                transform.anchorMin = new Vector2 (0, 0);
+                transform.anchorMax = new Vector2 (0, 0);
+                
+                transform.sizeDelta = new Vector2 (50, 3.0f);
+                transform.anchoredPosition = a1 ; //+ direction * distance;// * .5f;
+
+               // transform.pivot = new Vector2 (0.0f, 0.0f);
+               // transform.localEulerAngles = new Vector3 (0, 0, 90);// GetAngleFromVectorFloat (direction));
                 
                 return line;
             }

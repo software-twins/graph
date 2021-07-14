@@ -132,7 +132,7 @@ public class CircleGraphic : MaskableGraphic
 		        vh.AddVert ( new Vector3 ( width + deltaWidth, deltaHeight, 0f ), color32, uv );
 
 		        int triangleIndex = 2;
-		        for ( int i = 1; i < detail; i++, triangleIndex ++ )
+		        for ( int i = 1; i < detail; i ++, triangleIndex ++ )
 		            {
 			            float radians = i * deltaRadians;
 
