@@ -5,19 +5,21 @@ using UnityEngine.UI;
 
 public class TestMouse : MonoBehaviour
 	{
-        /*[SerializeField] */private LineGraphic _line = new LineGraphic ();
+        private LineGraphic _line ; //= new LineGraphic ();
 
     	void Start ()
     		{
-        		_line.SetSize (2);
-    		}
+                _line = gameObject.AddComponent < LineGraphic > ();
+
+                _line.SetSize (2);
+     		}
  
     	void Update	()
     		{
-        		if ( Input.GetMouseButton (0) )
+        		if ( Input.GetMouseButton ( 0 ) )
         			{
-            			Debug.Log (Input.mousePosition);
-            			_line.AddPoint (Input.mousePosition);
+            			//Debug.Log ( Input.mousePosition );
+            			_line.AddPoint ( Input.mousePosition );
         			}
     		}
 	}
