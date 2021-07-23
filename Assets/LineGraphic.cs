@@ -29,7 +29,7 @@ public class LineGraphic : MaskableGraphic
         private Line _line = new SmoothLine ();
     	
 		[ SerializeField ]
-        protected float _width = 2;
+        protected float _width = 0.1f;
     	
         [ NonSerialized ]
         private bool _refresh = true;
@@ -127,6 +127,11 @@ public class LineGraphic : MaskableGraphic
                         ( (SmoothLine) _line).lineSmoothStyle = smoothStyle;
                 _refresh = true;
             }   
+
+        protected override void OnRectTransformDimensionsChange ()   
+            {
+                Debug.Log ( "OnRectTransformDimensionsChange()" );
+            }
     }
  
 [System.Serializable]
@@ -195,7 +200,7 @@ public class SmoothLine : Line
              // кривая гладкость. Чем меньше значение, гладкая кривая, но количество вершин увеличится.
         /// </summary>
         [ SerializeField ] 
-        public float smoothness = 2;
+        public float smoothness = 1;
         /// <summary>
              /// Кривая коэффициент сглаживания. Кривизна кривой может быть изменена путем регулировки гладкого коэффициента для получения другой кривой с небольшим изменением внешнего вида.
         /// </summary>
@@ -215,7 +220,7 @@ public class SmoothLine : Line
                             {
                                 llp = i > 1 ? _data_points [i - 2] : lp;
                                 nnp = i < _data_points.Count - 1 ? _data_points  [i + 1] : np;
-                               
+                               Debug.Log ("--------");
                                bezier_list (ref bezierPoints, _data_points [i], _data_points [i + 1], llp, nnp, smoothness, lineSmoothStyle);
                                 
                                 for ( int j = 0; j < bezierPoints.Count; j ++ )

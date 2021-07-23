@@ -13,7 +13,7 @@ public class Graph : MonoBehaviour
 				/** setting up background rect, then ... */
                 GameObject background = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.05f), new Vector2 (0.0f, 0.0f), new Vector2 (1.0f, 1.0f) );
 
-				/** of the next two cycles, the parameters of the cycles are 
+				/** on the next two cycles, the parameters of the cycles are 
 				 * 10 and 7 determine the number of grid lines; these values are still
 				 * built-in and are not moved to parameters 
 				 */
@@ -26,12 +26,20 @@ public class Graph : MonoBehaviour
 				for (int i = 0; i < 7; i ++ )
                         _y (_axe (background, _rect.height / 7.0f * i), 0.07f + /** max value  */ 98.0f / _rect.height / 7.0f * i);
 
-                //Debug.Log ("----" + _rect.height);
-
-				_data_rect = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.15f), new Vector2 (0.05f, 0.07f), new Vector2 (0.95f, 0.91f) );
+              	_data_rect = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.15f), new Vector2 (0.05f, 0.07f), new Vector2 (0.95f, 0.91f) );
                             
                 for ( int i = 0; i < 10; i ++ )
                         _points.AddLast (new LinkedListNode < GameObject > (_point (i / 10.0f, _values [i] / _rect.height))); // 0.5f + 0.3f * Mathf.Cos (i))));
+
+                GameObject l = new GameObject ( "Line", typeof ( LineGraphic ) ); 
+                l.transform.SetParent (_data_rect.transform, false);
+
+                LineGraphic line = line.GetComponent <LineGraphic> ();
+
+                l.SetSize (2);
+
+                for ( int i = 0; i < 10; i ++ )
+                        l.AddPoint (new Vector3 (i * 20, _values [i], 0.0f));
 
                 LinkedListNode < GameObject > item = _points.First;
 
@@ -51,15 +59,15 @@ public class Graph : MonoBehaviour
                         j ++ ;
                     }*/
 
-                RectTransform transform = _data_rect.GetComponent < RectTransform > ();
+             //   RectTransform transform = _data_rect.GetComponent < RectTransform > ();
                 
-                float graphHeight = transform.rect.height;
-                float yMaximum = 100f;
-                float xSize = 50f;
+            //    float graphHeight = transform.rect.height;
+            //    float yMaximum = 100f;
+            //    float xSize = 50f;
 
-                Debug.Log ( " _data-rect " + transform.sizeDelta.y );
+           //     Debug.Log ( " _data-rect " + transform.sizeDelta.y );
 
-                Vector2 lastCircleGameObject = new Vector2 (-1.0f, -1.0f); //null;
+                /*Vector2 lastCircleGameObject = new Vector2 (-1.0f, -1.0f); //null;
                 for ( int i = 0; i < _values.Count-1; i ++ )
                     {
                         float xPosition = xSize + i * xSize;
@@ -72,10 +80,12 @@ public class Graph : MonoBehaviour
                                                 new Vector2 (i       / 10.0f, _values [i]      / _rect.height)); // 0.5f + 0.3f * Mathf.Cos (i)))); );
 
                         lastCircleGameObject = circleGameObject;
-                    }
+                    }*/
+
+                _line ( new Vector2 ( 0 / 10.0f, _values [0] / _rect.height ), new Vector2 ( 1 / 10.0f, _values [1] / _rect.height ) );
             }
 
-		public Graph anchors (Vector2 min, Vector2 max)
+        public Graph anchors (Vector2 min, Vector2 max)
 			{
 				RectTransform transform = GetComponent <RectTransform> ();
 
@@ -90,7 +100,7 @@ public class Graph : MonoBehaviour
 				return this;
 			}
 
-		public Rect _rect = new Rect (0.0f, 0.0f, 2.0f, 100.0f);
+		public Rect _rect = new Rect ( 0.0f, 0.0f, 2-.0f, 100.0f );
 
         /** private method sections */	    
         private GameObject _image (Vector4 color, Vector2 min, Vector2 max)
@@ -270,21 +280,31 @@ public class Graph : MonoBehaviour
                 return point;
             }
 
-        private GameObject _line (Vector2 a, Vector2 b, Vector2 a1, Vector2 b1)
+        private GameObject _line (Vector2 point_a, Vector2 point_b)
             {
-                GameObject line = new GameObject ("Line", typeof (Image)); 
+                //GameObject line = new GameObject ("Line", typeof (LineGraphic)); 
+                GameObject line = new GameObject ("Line", typeof (LineGraphic)); 
                 line.transform.SetParent (_data_rect.transform, false);
 
-                line.GetComponent < Image > ().color = new Color (0.0f, 1.0f, 0.0f, 0.5f); 
+                //line.GetComponent <Image> ().color = Color.green;
 
-                RectTransform transform = line.GetComponent < RectTransform > ();
-                
-                float distance = Vector2.Distance (a, b); // * 300.0f;
-                
-                Debug.Log (distance + " " +  a + " " + b);
-              //  transform.sizeDelta = new Vector2 (distance, 3.0f);
+                LineGraphic l = line.GetComponent <LineGraphic> ();
 
-                Vector2 direction = (b - a).normalized;
+                l.SetSize (2);
+
+                for ( int i = 0; i < 10; i ++ )
+                        l.AddPoint (new Vector3 (i * 20, _values [i], 0.0f));
+                //l.AddPoint (new Vector3 (1 / 10.0f, _values [1] / _rect.height, 0.0f));
+                //      l.AddPoint (new Vector3 (i * 100, _values [i], 0.0f));
+
+               // RectTransform transform = line.GetComponent < RectTransform > ();
+                
+               //    float distance = Vector2.Distance (a, b); // * 300.0f;
+                
+               //    Debug.Log (distance + " " +  a + " " + b);
+               //  transform.sizeDelta = new Vector2 (distance, 3.0f);
+
+               //     Vector2 direction = (b - a).normalized;
                 
                 //transform.anchorMin = transform.anchorMax = new Vector2 (0.0f, 0.0f);
                 
@@ -292,15 +312,27 @@ public class Graph : MonoBehaviour
                                 
                 //transform.localEulerAngles = new Vector3 (0.0f, 0.0f, GetAngleFromVectorFloat (direction));
 
-                transform.anchorMin = new Vector2 (0, 0);
-                transform.anchorMax = new Vector2 (0, 0);
+ //               transform.pivot = new Vector2 (0 / 10.0f, _values [0] / _rect.height);
+
+   //             transform.anchorMin = new Vector2 (0, 0);
+     //           transform.anchorMax = new Vector2 (1.0f / 10.0f, _values [1] / _rect.height);
                 
-                transform.sizeDelta = new Vector2 (50, 3.0f);
-                transform.anchoredPosition = a1 ; //+ direction * distance;// * .5f;
+               // transform.sizeDelta = new Vector2 (50, 3.0f);
+               // transform.anchoredPosition = a1 ; //+ direction * distance;// * .5f;
 
                // transform.pivot = new Vector2 (0.0f, 0.0f);
                // transform.localEulerAngles = new Vector3 (0, 0, 90);// GetAngleFromVectorFloat (direction));
-                
+
+
+       // RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+              //  Vector2 dir = ( point_b - point_a ).normalized;
+            //    float distance = 300; //Vector2.Distance ( point_a, point_b );
+             //   transform.anchorMin = transform.anchorMax = new Vector2 ( 0, 0 );
+        
+             //   transform.sizeDelta = new Vector2 ( distance, 3.0f );
+             //   transform.anchoredPosition = point_a + dir * distance * .5f;
+             //   transform.localEulerAngles = new Vector3 ( 0.0f, 0.0f, GetAngleFromVectorFloat ( dir ) );
+
                 return line;
             }
 
