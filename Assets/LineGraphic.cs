@@ -69,6 +69,8 @@ public class LineGraphic : MaskableGraphic
             {
                 vh.Clear ();
                 _line.draw_line ( vh );
+
+				Debug.Log ( "OnPopulateMesh" );
             }
 
         private void Update ()
@@ -131,14 +133,14 @@ public class LineGraphic : MaskableGraphic
         protected override void OnRectTransformDimensionsChange ()   
             {
                 Debug.Log ( "OnRectTransformDimensionsChange()" );
-            }
+			}
     }
  
 [System.Serializable]
 public class Line
     {
         [ SerializeField ]
-        protected List <Vector3> _data_points = new List <Vector3> ();
+        protected List < Vector3 > _data_points = new List <Vector3> ();
 
         [ SerializeField ]
         public float _size = 1;
@@ -220,8 +222,8 @@ public class SmoothLine : Line
                             {
                                 llp = i > 1 ? _data_points [i - 2] : lp;
                                 nnp = i < _data_points.Count - 1 ? _data_points  [i + 1] : np;
-                               Debug.Log ("--------");
-                               bezier_list (ref bezierPoints, _data_points [i], _data_points [i + 1], llp, nnp, smoothness, lineSmoothStyle);
+
+				               	bezier_list (ref bezierPoints, _data_points [i], _data_points [i + 1], llp, nnp, smoothness, lineSmoothStyle);
                                 
                                 for ( int j = 0; j < bezierPoints.Count; j ++ )
                                     {

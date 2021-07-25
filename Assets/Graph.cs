@@ -11,37 +11,44 @@ public class Graph : MonoBehaviour
 		void Start ()
 			{
 				/** setting up background rect, then ... */
-                GameObject background = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.05f), new Vector2 (0.0f, 0.0f), new Vector2 (1.0f, 1.0f) );
+                GameObject background = _image ( new Vector4 ( 0.0f, 0.0f, 1.0f, 0.05f ), new Vector2 ( 0.0f, 0.0f ), new Vector2 ( 1.0f, 1.0f ) );
 
 				/** on the next two cycles, the parameters of the cycles are 
 				 * 10 and 7 determine the number of grid lines; these values are still
 				 * built-in and are not moved to parameters 
 				 */
-						
+				Debug.Log ( _rect.width + " " + _rect.height );		
 				/** ... as part of background setting up horizontal lines of value grid and ... */
 				for ( int i = 0; i < 10 ; i ++  )
-						_x (_axe (background, _rect.width / 10.0f * i), 0.05f + 0.10f * i);
+						_x ( _axe (background, _rect.width / 10.0f * i), 0.05f + 0.10f * i );
 				
 				/**... as part of background setting up vertical lines of value grid; */
-				for (int i = 0; i < 7; i ++ )
-                        _y (_axe (background, _rect.height / 7.0f * i), 0.07f + /** max value  */ 98.0f / _rect.height / 7.0f * i);
+				for ( int i = 0; i < 7; i ++ )
+                        _y ( _axe (background, _rect.height / 7.0f * i), 0.07f + /** max value  */ 98.0f / _rect.height / 7.0f * i );
 
               	_data_rect = _image ( new Vector4 (0.0f, 0.0f, 1.0f, 0.15f), new Vector2 (0.05f, 0.07f), new Vector2 (0.95f, 0.91f) );
                             
                 for ( int i = 0; i < 10; i ++ )
                         _points.AddLast (new LinkedListNode < GameObject > (_point (i / 10.0f, _values [i] / _rect.height))); // 0.5f + 0.3f * Mathf.Cos (i))));
 
-                GameObject l = new GameObject ( "Line", typeof ( LineGraphic ) ); 
+				_transform = _data_rect.GetComponent < RectTransform > ();
+				
+				GameObject l = new GameObject ( "Line", typeof ( LineGraphic ) ); 
                 l.transform.SetParent (_data_rect.transform, false);
 
-                LineGraphic line = line.GetComponent <LineGraphic> ();
+                LineGraphic line = l.GetComponent <LineGraphic> ();
 
-                l.SetSize (2);
+                line.SetSize (2);
 
                 for ( int i = 0; i < 10; i ++ )
-                        l.AddPoint (new Vector3 (i * 20, _values [i], 0.0f));
-
+						line.AddPoint (new Vector3 (i * _transform.rect.width / 10.0f, _transform.rect.height / 98.0f * _values [i] , 0.0f));
+						
                 LinkedListNode < GameObject > item = _points.First;
+
+				RectTransform transform = l.GetComponent < RectTransform > ();
+
+				transform.pivot = transform.anchorMin = new Vector2 ( 0.0f, 0.0f );
+				transform.anchorMax = new Vector2 ( 1.0f, 1.0f );
 
                // int j = 0;
 
@@ -82,8 +89,10 @@ public class Graph : MonoBehaviour
                         lastCircleGameObject = circleGameObject;
                     }*/
 
-                _line ( new Vector2 ( 0 / 10.0f, _values [0] / _rect.height ), new Vector2 ( 1 / 10.0f, _values [1] / _rect.height ) );
+              //  _line ( new Vector2 ( 0 / 10.0f, _values [0] / _rect.height ), new Vector2 ( 1 / 10.0f, _values [1] / _rect.height ) );
             }
+
+		private RectTransform _transform;
 
         public Graph anchors (Vector2 min, Vector2 max)
 			{
@@ -100,7 +109,7 @@ public class Graph : MonoBehaviour
 				return this;
 			}
 
-		public Rect _rect = new Rect ( 0.0f, 0.0f, 2-.0f, 100.0f );
+		public Rect _rect = new Rect ( 0.0f, 0.0f, 2.0f, 100.0f );
 
         /** private method sections */	    
         private GameObject _image (Vector4 color, Vector2 min, Vector2 max)
