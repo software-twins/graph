@@ -28,8 +28,9 @@ public class LineGraphic : MaskableGraphic
 		[ SerializeField ]
         private Line _line = new SmoothLine ();
     	
-		[ SerializeField ]
-        protected float _width = 0.1f;
+		//[ SerializeField ]
+        protected RectTransform _transform; 
+        protected float _width = 0.1f;//, _height = 0.1f;
     	
         [ NonSerialized ]
         private bool _refresh = true;
@@ -59,8 +60,8 @@ public class LineGraphic : MaskableGraphic
             {
                 base.Awake ();
 
-                _width = rectTransform.sizeDelta.x;
-            
+                _transform = gameObject.GetComponent < RectTransform > ();
+
                 if ( LineType == LineType.Smooth )
                         _line = new SmoothLine ();
             }
@@ -68,9 +69,12 @@ public class LineGraphic : MaskableGraphic
         protected override void OnPopulateMesh ( VertexHelper vh )
             {
                 vh.Clear ();
-                _line.draw_line ( vh );
 
-				Debug.Log ( "OnPopulateMesh" );
+             //   _transform = gameObject.GetComponent < RectTransform > ();
+
+                _line.draw_line ( vh, _transform.rect.width, _transform.rect.height );
+
+                Debug.Log ( "OnPopulateMesh - " + _transform.rect.width + " " +  _transform.rect.height );
             }
 
         private void Update ()
@@ -132,7 +136,8 @@ public class LineGraphic : MaskableGraphic
 
         protected override void OnRectTransformDimensionsChange ()   
             {
-                Debug.Log ( "OnRectTransformDimensionsChange()" );
+               // Debug.Log ( "OnRectTransformDimensionsChange()" );
+                SetVerticesDirty ();
 			}
     }
  
@@ -148,7 +153,7 @@ public class Line
         [ SerializeField ]
         public Color _line_color = Color.green;
         
-        public virtual void draw_line ( VertexHelper vh )
+        public virtual void draw_line ( VertexHelper vh, float width, float height )
             {
             }
     
@@ -188,7 +193,7 @@ public class Line
 
 public class StraightLine : Line
     {
-        public override void draw_line ( VertexHelper vh )
+        public override void draw_line ( VertexHelper vh,  float width, float height )
             {
                 for ( int i = 0; i < _data_points.Count; i ++ )
                         if ( i < _data_points.Count - 1 )
@@ -209,21 +214,48 @@ public class SmoothLine : Line
         [ SerializeField ] 
         public float lineSmoothStyle = 2;
   
-        public override void draw_line ( VertexHelper vh )
+        public override void draw_line ( VertexHelper vh, float width, float height )
             {
                 Vector3 lp  = Vector3.zero;
                 Vector3 np  = Vector3.zero;
                 Vector3 llp = Vector3.zero;
                 Vector3 nnp = Vector3.zero;
  
-                for ( int i = 0; i < _data_points.Count; i ++ )
+                /*for ( int i = 0; i < _data_points.Count; i ++ )
                     {
+                        Debug.Log ( "width " + width + " " + height );
                         if ( i < _data_points.Count - 1 )
                             {
-                                llp = i > 1 ? _data_points [i - 2] : lp;
+                                Vector3 a = new Vector3 ( _data_points [i].x * width / 10.0f, _data_points [i].y * height / 98.0f, 0.0f );
+                                Vector3 b = new Vector3 ( _data_points [i + 1].x * width / 10.0f, _data_points [i + 1].y * height / 98.0f, 0.0f );
+
+                                llp = i > 1 ?  new Vector3 ( _data_points [i - 2].x * width / 10.0f, _data_points [i - 2].y * height / 98.0f, 0.0f ) : lp;
+                                nnp = i < _data_points.Count - 1 ? b _data_points  [i + 1] : np;
+
+				               	bezier_list (ref bezierPoints, a , b , llp, nnp, smoothness, lineSmoothStyle);
+                                
+                                for ( int j = 0; j < bezierPoints.Count; j ++ )
+                                    {
+                                        if ( j < bezierPoints.Count - 1 )
+                                                draw ( vh, bezierPoints [j], bezierPoints [j + 1], _size, _line_color );
+                                            
+                                    }
+                            }
+                    }*/
+
+                
+                for ( int i = 0; i < _data_points.Count; i ++ )
+                    {
+                        Debug.Log ( "width " + width + " " + height );
+                        if ( i < _data_points.Count - 1 )
+                            {
+                                Vector3 a = new Vector3 ( _data_points [i].x * width / 10.0f, _data_points [i].y * height / 98.0f, 0.0f );
+                                Vector3 b = new Vector3 ( _data_points [i + 1].x * width / 10.0f, _data_points [i + 1].y * height / 98.0f, 0.0f );
+
+                                llp = i > 1 ? _data_points [i - 2] /*new Vector3 ( _data_points [i - 2].x * width / 10.0f, _data_points [i - 2].y * height / 98.0f, 0.0f )*/ : lp;
                                 nnp = i < _data_points.Count - 1 ? _data_points  [i + 1] : np;
 
-				               	bezier_list (ref bezierPoints, _data_points [i], _data_points [i + 1], llp, nnp, smoothness, lineSmoothStyle);
+                                bezier_list (ref bezierPoints, _data_points [i], _data_points [i + 1], llp, nnp, smoothness, lineSmoothStyle);
                                 
                                 for ( int j = 0; j < bezierPoints.Count; j ++ )
                                     {

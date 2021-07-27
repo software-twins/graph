@@ -34,21 +34,25 @@ public class Graph : MonoBehaviour
 				_transform = _data_rect.GetComponent < RectTransform > ();
 				
 				GameObject l = new GameObject ( "Line", typeof ( LineGraphic ) ); 
-                l.transform.SetParent (_data_rect.transform, false);
+                l.transform.SetParent (_data_rect.transform, false );
 
-                LineGraphic line = l.GetComponent <LineGraphic> ();
+                //RectTransform transform = l.GetComponent < RectTransform > ();
+
+                //transform.pivot = transform.anchorMin  = new Vector2 ( 0.0f, 0.0f );
+                //transform.anchorMax = new Vector2 ( 1.0f, 1.0f );
+
+                Debug.Log ( "! ->" + _transform.rect.width + " " + _transform.rect.height );
+
+                LineGraphic line = l.GetComponent < LineGraphic > ();
 
                 line.SetSize (2);
 
                 for ( int i = 0; i < 10; i ++ )
-						line.AddPoint (new Vector3 (i * _transform.rect.width / 10.0f, _transform.rect.height / 98.0f * _values [i] , 0.0f));
+                                                line.AddPoint (new Vector3 (i * _transform.rect.width / 10.0f, _values [i] * _transform.rect.height / 98.0f, 0.0f));
+                       // line.AddPoint (new Vector3 (i, _values [i]));
 						
                 LinkedListNode < GameObject > item = _points.First;
 
-				RectTransform transform = l.GetComponent < RectTransform > ();
-
-				transform.pivot = transform.anchorMin = new Vector2 ( 0.0f, 0.0f );
-				transform.anchorMax = new Vector2 ( 1.0f, 1.0f );
 
                // int j = 0;
 
