@@ -23,14 +23,14 @@ public enum LineType
 public class LineGraphic : MaskableGraphic
 	{
     	[ SerializeField ]
-        private LineType _line_type = LineType.Smooth;
+		private LineType _line_type = LineType.Straight; // Smooth;
     	
 		[ SerializeField ]
-        private Line _line = new SmoothLine ();
+        private Line _line = new StraightLine ();
     	
 		//[ SerializeField ]
         protected RectTransform _transform; 
-        protected float _width = 0.1f;//, _height = 0.1f;
+        protected float _width = 5.7f;
     	
         [ NonSerialized ]
         private bool _refresh = true;
@@ -43,6 +43,7 @@ public class LineGraphic : MaskableGraphic
         public LineType LineType
             {
                 get { return _line_type; }
+
                 set
                     {
                         _line_type = value;
@@ -62,39 +63,37 @@ public class LineGraphic : MaskableGraphic
 
                 _transform = gameObject.GetComponent < RectTransform > ();
 
-                if ( LineType == LineType.Smooth )
-                        _line = new SmoothLine ();
+               // if ( LineType == LineType.Smooth )
+               //         _line = new SmoothLine ();
             }
 
         protected override void OnPopulateMesh ( VertexHelper vh )
             {
                 vh.Clear ();
 
-             //   _transform = gameObject.GetComponent < RectTransform > ();
-
                 _line.draw_line ( vh, _transform.rect.width, _transform.rect.height );
-
-                Debug.Log ( "OnPopulateMesh - " + _transform.rect.width + " " +  _transform.rect.height );
             }
 
         private void Update ()
             {
-                CheckRefreshChart ();
+				
+            	  CheckRefreshChart ();
+            	  
             }
-
-        protected void CheckRefreshChart ()
+	        
+		   protected void CheckRefreshChart ()
             {
                 if ( _refresh )
                     {
                         int width = ( int ) _width;
-
+		  
                         rectTransform.SetSizeWithCurrentAnchors ( RectTransform.Axis.Horizontal, width - 1 );
                         rectTransform.SetSizeWithCurrentAnchors ( RectTransform.Axis.Horizontal, width );
-
+		  
                         _refresh = false;
                     }
             }
-    
+              
         public void AddPoint ( Vector3 v3 )
             {
                 _line.AddPoint ( v3 );
@@ -106,7 +105,9 @@ public class LineGraphic : MaskableGraphic
                 _line.AddPoint ( points );
                 _refresh = true;
             }
- 
+ 		/**
+ 		 * set the thickness for the _line chart
+ 		 */
         public void SetSize ( float size )
             {
                 _line._size = size;
@@ -136,8 +137,7 @@ public class LineGraphic : MaskableGraphic
 
         protected override void OnRectTransformDimensionsChange ()   
             {
-               // Debug.Log ( "OnRectTransformDimensionsChange()" );
-                SetVerticesDirty ();
+				SetVerticesDirty ();
 			}
     }
  
@@ -145,10 +145,17 @@ public class LineGraphic : MaskableGraphic
 public class Line
     {
         [ SerializeField ]
-        protected List < Vector3 > _data_points = new List <Vector3> ();
+        protected List < Vector3 > _data_points = new List < Vector3 > ();
 
         [ SerializeField ]
-        public float _size = 1;
+		/**
+		  * 	here size variable determines the thickness of the line; 
+		  * 		it is used in the _draw_ and _draw_line_ methods, when the mesh vertice _vh_ are calculate, and
+		  * 		is setting up in the external calling code through calling the _SetSize_ method;
+		  * 		this method (_SetSize_) is defined in another class _LineGraph_, which includes _Line_ class as 
+		  * 		an aggregate and in which _Line_ is included as part of
+		  */
+        public float _size = 1.0f;
         
         [ SerializeField ]
         public Color _line_color = Color.green;
@@ -157,27 +164,28 @@ public class Line
             {
             }
     
-        public void AddPoint ( Vector3 p )
+        public void add_point ( Vector3 p )
             {
                 _data_points.Add ( p );
             }
     
-        public void AddPoint ( List <Vector3> points )
+        public void add_point ( List < Vector3 > points )
             {
                 _data_points.AddRange ( points );
             }        
 
-        protected void draw ( VertexHelper vh, Vector3 point_a, Vector3 point_b, float size, Color32 color )
+        protected void draw ( VertexHelper vh, Vector3 a, Vector3 b, float size, Color32 color )
             {
-                if ( point_a == point_b ) 
-                        return;
+                if ( a == b ) 
+                		return;
 
-                Vector3 v = Vector3.Cross ( point_a - point_b, Vector3.forward ).normalized * size;
+				
+				Vector3 v = Vector3.Cross (a - b, Vector3.forward).normalized * size;
                 
-                _vertex [0].position = point_a - v;
-                _vertex [1].position = point_b - v;
-                _vertex [2].position = point_b + v;
-                _vertex [3].position = point_a + v;
+                _vertex [0].position = a - v;
+                _vertex [1].position = b - v;
+                _vertex [2].position = b + v;
+                _vertex [3].position = a + v;
  
                 for ( int i = 0; i < 4; i ++ )
                     {
@@ -187,17 +195,29 @@ public class Line
                 
                 vh.AddUIVertexQuad ( _vertex );
             }
-       
-        private static UIVertex [] _vertex = new UIVertex [4];  
-    }
+    
+		private static UIVertex [] _vertex = new UIVertex [4];  
+	}
 
 public class StraightLine : Line
     {
         public override void draw_line ( VertexHelper vh,  float width, float height )
             {
-                for ( int i = 0; i < _data_points.Count; i ++ )
-                        if ( i < _data_points.Count - 1 )
-                                draw ( vh, _data_points [i], _data_points [i + 1], _size, _line_color );
+				for ( int i = 0; i < _data_points.Count; i ++ )
+						if ( i < _data_points.Count - 1 )
+							{
+								Vector3 a = new Vector3 ( _data_points [i].x * width  / 10.0f, 
+														  _data_points [i].y * height / 98.0f, 
+														   0.0f );
+								
+								Vector3 b = new Vector3 ( _data_points [i + 1].x * width  / 10.0f,
+														  _data_points [i + 1].y * height / 98.0f,
+														   0.0f );
+
+								//draw (vh, _data_points [i], _data_points [i + 1], _size, _line_color);
+								Debug.Log (_size );
+								draw ( vh, a, b, _size, _line_color );
+							}
             }
     }
 
@@ -221,50 +241,32 @@ public class SmoothLine : Line
                 Vector3 llp = Vector3.zero;
                 Vector3 nnp = Vector3.zero;
  
-                /*for ( int i = 0; i < _data_points.Count; i ++ )
-                    {
-                        Debug.Log ( "width " + width + " " + height );
-                        if ( i < _data_points.Count - 1 )
-                            {
-                                Vector3 a = new Vector3 ( _data_points [i].x * width / 10.0f, _data_points [i].y * height / 98.0f, 0.0f );
-                                Vector3 b = new Vector3 ( _data_points [i + 1].x * width / 10.0f, _data_points [i + 1].y * height / 98.0f, 0.0f );
+				for (int i = 0; i < _data_points.Count; i++)
+					{
+						if ( i < _data_points.Count - 1 )
+							{
+								Vector3 a = new Vector3 ( _data_points [i].x * width  / 10.0f, 
+					                                      _data_points [i].y * height / 98.0f, 
+					                                       0.0f);
+				
+								Vector3 b = new Vector3 ( _data_points [i + 1].x * width  / 10.0f, 
+					                                      _data_points [i + 1].y * height / 98.0f, 
+					                                       0.0f);
 
-                                llp = i > 1 ?  new Vector3 ( _data_points [i - 2].x * width / 10.0f, _data_points [i - 2].y * height / 98.0f, 0.0f ) : lp;
-                                nnp = i < _data_points.Count - 1 ? b _data_points  [i + 1] : np;
-
-				               	bezier_list (ref bezierPoints, a , b , llp, nnp, smoothness, lineSmoothStyle);
+								llp = i > 1 ? new Vector3 ( _data_points [i - 2].x * width / 10.0f,
+															_data_points [i - 2].y * height / 98.0f,
+															 0.0f)
+											: lp;
                                 
-                                for ( int j = 0; j < bezierPoints.Count; j ++ )
-                                    {
-                                        if ( j < bezierPoints.Count - 1 )
-                                                draw ( vh, bezierPoints [j], bezierPoints [j + 1], _size, _line_color );
-                                            
-                                    }
-                            }
-                    }*/
+								nnp = i < _data_points.Count - 1 ? b : np;
 
-                
-                for ( int i = 0; i < _data_points.Count; i ++ )
-                    {
-                        Debug.Log ( "width " + width + " " + height );
-                        if ( i < _data_points.Count - 1 )
-                            {
-                                Vector3 a = new Vector3 ( _data_points [i].x * width / 10.0f, _data_points [i].y * height / 98.0f, 0.0f );
-                                Vector3 b = new Vector3 ( _data_points [i + 1].x * width / 10.0f, _data_points [i + 1].y * height / 98.0f, 0.0f );
-
-                                llp = i > 1 ? _data_points [i - 2] /*new Vector3 ( _data_points [i - 2].x * width / 10.0f, _data_points [i - 2].y * height / 98.0f, 0.0f )*/ : lp;
-                                nnp = i < _data_points.Count - 1 ? _data_points  [i + 1] : np;
-
-                                bezier_list (ref bezierPoints, _data_points [i], _data_points [i + 1], llp, nnp, smoothness, lineSmoothStyle);
+								bezier_list ( ref bezierPoints, a, b, llp, nnp, smoothness, lineSmoothStyle );
                                 
-                                for ( int j = 0; j < bezierPoints.Count; j ++ )
-                                    {
-                                        if ( j < bezierPoints.Count - 1 )
-                                                draw ( vh, bezierPoints [j], bezierPoints [j + 1], _size, _line_color );
-                                            
-                                    }
-                            }
-                    }
+								for ( int j = 0; j < bezierPoints.Count; j ++ )
+										if ( j < bezierPoints.Count - 1 )
+												draw ( vh, bezierPoints [j], bezierPoints [j + 1], _size, _line_color);
+							}
+					}
             }   
 
         private List <Vector3> bezierPoints = new List <Vector3> ();

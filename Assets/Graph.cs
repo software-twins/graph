@@ -45,11 +45,11 @@ public class Graph : MonoBehaviour
 
                 LineGraphic line = l.GetComponent < LineGraphic > ();
 
-                line.SetSize (2);
+                line.SetSize (1);
 
                 for ( int i = 0; i < 10; i ++ )
-                                                line.AddPoint (new Vector3 (i * _transform.rect.width / 10.0f, _values [i] * _transform.rect.height / 98.0f, 0.0f));
-                       // line.AddPoint (new Vector3 (i, _values [i]));
+                                                //line.AddPoint (new Vector3 (i * _transform.rect.width / 10.0f, _values [i] * _transform.rect.height / 98.0f, 0.0f));
+                       line.AddPoint (new Vector3 (i, _values [i]));
 						
                 LinkedListNode < GameObject > item = _points.First;
 
