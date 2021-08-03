@@ -22,25 +22,111 @@ public enum LineType
 [ RequireComponent ( typeof( CanvasRenderer ) ) ]
 public class LineGraphic : MaskableGraphic
 	{
-    	[ SerializeField ]
+        /** 
+          * adding a one point to a chart _line
+          */
+        public void add_point ( Vector3 value )
+            {
+                _line.add_point ( value );
+                
+                /* comment as indicated earlier when declaring a variable 
+                 * _refresh = true; */
+            }
+
+        /**
+          * adding a set of points to a chart _line
+          */
+        public void add_point ( List < Vector3 > points )
+            {
+                _line.add_point ( points );
+                
+                /* comment as indicated earlier when declaring a variable 
+                 * _refresh = true; */
+            }
+
+        /**
+          * set the thickness for the _line chart
+          */
+        public void size ( float size )
+            {
+                _line._size = size;
+
+                /* comment as indicated earlier when declaring a variable 
+                 * _refresh = true; */
+            }
+    
+        /**
+          * setting the color for the chart _line
+          */
+        public void color ( Color color )
+            {
+                _line._line_color = color;
+
+                /* comment as indicated earlier when declaring a variable 
+                 * _refresh = true; */
+            }
+    
+        /**
+          * setting the smoothness for the chart _line
+          */
+        //public void smoothness ( float value )
+        //    {
+        //        if ( _line_type == LineType.Smooth )
+        //                ( (SmoothLine) _line ).smoothness = value;
+ 
+                /* comment as indicated earlier when declaring a variable 
+                 * _refresh = true; */
+        //    }
+    
+        /**
+          * setting the smoothness style for the chart _line
+          */
+        //public void smooth_style ( float value )
+        //    {
+        //        if ( LineType == LineType.Smooth )
+        //                ( (SmoothLine) _line).lineSmoothStyle = value;
+
+                /* comment as indicated earlier when declaring a variable 
+                 * _refresh = true; */
+        //    }       	
+
+        [ SerializeField ]
 		private LineType _line_type = LineType.Straight; // Smooth;
     	
 		[ SerializeField ]
         private Line _line = new StraightLine ();
     	
-		//[ SerializeField ]
-        protected RectTransform _transform; 
-        protected float _width = 5.7f;
+		/* [ SerializeField ] */
+        protected RectTransform _transform;
+        /** 
+          * the purpose is not clear, while it is commented out, 
+          * it was only found that this variable, _protected float width_, is used in the CheckRereshState method,
+          * that is called in the _Update_ method
+          *  
+          * protected float _width = 1.0f;
+          */  
     	
-        [ NonSerialized ]
-        private bool _refresh = true;
+        /**
+          * the analysis of the state of the variable _private bool refresh_ is carried out
+          * only in the _CheckRefreshState_  method, we will also try to comment it out
+          *
+          * [ NonSerialized ]
+          * private bool _refresh = true;
+          *
+          * we also comment on the assignment of values to this variable _refresh_ along the way of source text
+          */
     
-        public float width 
-            { 
-                get { return _width; } 
-            }
+        /**
+          * since the variable _width_ is commented out, then the corresponding get/set method 
+          * are commented for now too
+          *        
+          * public float width 
+          *      { 
+          *          get { return _width; } 
+          *      }
+          */
         
-        public LineType LineType
+        public LineType line_type
             {
                 get { return _line_type; }
 
@@ -53,7 +139,10 @@ public class LineGraphic : MaskableGraphic
                         else
                                 _line = new SmoothLine ();
                         
-                        _refresh = true;
+                        /**
+                          * comment as indicated earlier when declaring a variable 
+                          *_refresh = true;
+                          */
                     }
             }
  
@@ -63,8 +152,8 @@ public class LineGraphic : MaskableGraphic
 
                 _transform = gameObject.GetComponent < RectTransform > ();
 
-               // if ( LineType == LineType.Smooth )
-               //         _line = new SmoothLine ();
+                // if ( LineType == LineType.Smooth )
+                //         _line = new SmoothLine ();
             }
 
         protected override void OnPopulateMesh ( VertexHelper vh )
@@ -80,60 +169,32 @@ public class LineGraphic : MaskableGraphic
             	  CheckRefreshChart ();
             	  
             }
-	        
-		   protected void CheckRefreshChart ()
-            {
-                if ( _refresh )
-                    {
-                        int width = ( int ) _width;
-		  
-                        rectTransform.SetSizeWithCurrentAnchors ( RectTransform.Axis.Horizontal, width - 1 );
-                        rectTransform.SetSizeWithCurrentAnchors ( RectTransform.Axis.Horizontal, width );
-		  
-                        _refresh = false;
-                    }
-            }
+	       
+        /**
+          * the purpose of the _width_ variable, which is used in the method below, is not clear;
+          * the logic of this method _CheckRefreshChart_ is generally incomprehensible,
+          * for example, these two lines, in particular, second arguments _width_ - 1 and _width_
+          *
+          * rectTransform.SetSizeWithCurrentAnchors ( RectTransform.Axis.Horizontal, width - 1 );
+          * rectTransform.SetSizeWithCurrentAnchors ( RectTransform.Axis.Horizontal, width );
+          *
+          * so this method is also commented out and let's we try to run the script without it
+          * 
+		  *  protected void CheckRefreshChart ()
+          *     {
+          *         if ( _refresh )
+          *             {
+          *                 int width = ( int ) _width;
+		  *
+          *                 rectTransform.SetSizeWithCurrentAnchors ( RectTransform.Axis.Horizontal, width - 1 );
+          *                 rectTransform.SetSizeWithCurrentAnchors ( RectTransform.Axis.Horizontal, width );
+		  *
+          *                 _refresh = false;
+          *             }
+          *     }
+          */
               
-        public void AddPoint ( Vector3 v3 )
-            {
-                _line.AddPoint ( v3 );
-                _refresh = true;
-            }
-
-        public void AddPoint ( List <Vector3> points )
-            {
-                _line.AddPoint ( points );
-                _refresh = true;
-            }
- 		/**
- 		 * set the thickness for the _line chart
- 		 */
-        public void SetSize ( float size )
-            {
-                _line._size = size;
-                _refresh = true;
-            }
-    
-        public void SetColor ( Color color )
-            {
-                _line._line_color = color;
-                _refresh = true;
-            }
-    
-        public void SetSmoothness ( float smoothness )
-            {
-                if ( _line_type == LineType.Smooth )
-                        ( (SmoothLine) _line ).smoothness = smoothness;
- 
-                _refresh = true;
-            }
-    
-        public void SetLineSmoothStyle ( float smoothStyle )
-            {
-                if ( LineType == LineType.Smooth )
-                        ( (SmoothLine) _line).lineSmoothStyle = smoothStyle;
-                _refresh = true;
-            }   
+       
 
         protected override void OnRectTransformDimensionsChange ()   
             {
